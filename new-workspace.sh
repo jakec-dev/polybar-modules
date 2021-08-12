@@ -9,11 +9,15 @@ function open_new_ws() {
         open_ws=$(_jq '.num')
         if [[ $new_ws == $open_ws ]]; then
             new_ws=$((new_ws + 1))
-        else
+        elif [[ $open_ws > $new_ws ]]; then
             i3-msg workspace number $new_ws
+            return
+        else
+            i3-msg workspace number $((new_ws + 1))
             return
         fi
     done
+    i3-msg workspace number $new_ws
 }
 
 case "$1" in
