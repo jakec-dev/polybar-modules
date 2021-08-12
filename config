@@ -1,0 +1,194 @@
+[colors]
+background = #282a36
+selection = #44475a
+foreground = #bcc2cd
+comment = #6272a4
+primary = #8be9fd
+secondary = #ff79c6
+alert = #ff5555
+success = #50fa7b
+app = ${colors.primary}
+
+[settings]
+screenchange-reload = true
+format-padding = 1
+format-foreground = ${colors.foreground}
+format-underline = ${colors.foreground}
+format-background = ${colors.selection}
+
+[global/wm]
+margin-top = 0
+margin-bottom = 0
+
+[bar/mybar]
+width = 100%
+height = 32
+background = ${colors.background}
+foreground = ${colors.foreground}
+line-size = 3
+line-color = ${colors.primary}
+border-size = 0
+padding-left = 0
+padding-right = 2
+module-margin-left = 0
+module-margin-right = 1
+font-0 = Source Code Pro,Source Code Pro Medium:style=Medium,Regular:pixelsize=10;3
+font-1 = Font Awesome 5 Brands:style=Regular:pixelsize=10;3
+font-2 = Font Awesome 5 Free:style=Solid:pixelsize=10;3
+font-3 = Font Awesome 5 Free:style=Regular:pixelsize=10;3
+modules-left = app-launcher i3 new-workspace xwindow
+modules-right =  terminal file-manager notes tui tasks-inbox package-updates dotfiles trash alerts redshift volume time power-menu
+wm-restack = i3
+cursor-click = pointer
+cursor-scroll = ns-resize
+tray-position = right
+
+[module/app-launcher]
+type = custom/script
+exec = echo 
+click-left = rofi -modi drun, run -show drun -show-icons -display-drun "Search"
+format-underline =
+format-background =
+
+[module/i3]
+type = internal/i3
+pin-workspaces = true
+format = <label-state> <label-mode>
+format-padding = 0
+format-underline =
+format-background =
+index-sort = true
+wrapping-scroll = false
+label-mode-padding = 1
+label-mode-foreground = ${colors.background}
+label-mode-background = ${colors.primary}
+label-focused = %index%
+label-focused-background = ${colors.selection}
+label-focused-foreground = ${colors.foreground}
+label-focused-underline= ${colors.primary}
+label-focused-padding = 1
+label-unfocused = %index%
+label-unfocused-padding = 1
+label-visible =%index%
+label-visible-background = ${self.label-focused-background}
+label-visible-underline = ${self.label-focused-underline}
+label-visible-padding = ${self.label-focused-padding}
+label-urgent = %index% 
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 1
+label-separator = |
+
+[module/new-workspace]
+type = custom/script
+exec = echo 
+click-left = $XDG_CONFIG_HOME/polybar/new-workspace.sh
+format-underline =
+format-background =
+
+[module/xwindow]
+type = internal/xwindow
+label = >> %title%
+label-maxlen = 120
+format = <label>
+format-padding = 0
+format-underline =
+format-background =
+
+[module/terminal]
+type = custom/script
+exec = echo 
+click-left = $TERMINAL --class=floatingKitty
+click-right = $XDG_CONFIG_HOME/polybar/open-terminal.sh
+format-foreground = ${colors.app}
+format-underline = ${colors.app}
+
+[module/file-manager]
+type = custom/script
+exec = echo 
+click-left = $TERMINAL --class=floatingKitty lf
+click-right = $XDG_CONFIG_HOME/polybar/open-files.sh
+format-foreground = ${colors.app}
+format-underline = ${colors.app}
+
+[module/notes]
+type = custom/script
+exec = echo 
+click-left = $TERMINAL --class=floatingKitty vim -c "set nonumber norelativenumber" -c VimwikiIndex
+click-right = $XDG_CONFIG_HOME/polybar/open-vimwiki.sh 
+format-foreground = ${colors.app}
+format-underline = ${colors.app}
+
+[module/tui]
+type = custom/script
+exec = echo 
+click-left = $TERMINAL --class=floatingKitty taskwarrior-tui
+click-right = $XDG_CONFIG_HOME/polybar/open-tasks.sh
+format-foreground = ${colors.app}
+format-underline = ${colors.app}
+
+[module/redshift]
+type = custom/script
+exec = $XDG_CONFIG_HOME/polybar/redshift.sh
+click-left = $XDG_CONFIG_HOME/polybar/redshift.sh toggle
+interval = 5
+format = <label>
+
+[module/package-updates]
+type = custom/script
+exec = $XDG_CONFIG_HOME/polybar/pac-yay-updates.sh
+tail = true
+click-left = $XDG_CONFIG_HOME/polybar/pac-yay-updates.sh update
+interval = 5
+
+[module/trash]
+type = custom/script
+exec = $XDG_CONFIG_HOME/polybar/trash.sh
+interval = 5
+click-left = $TERMINAL --class=floatingKitty bash -c "$SCRIPTS_HOME/system/empty-trash.sh"
+
+[module/tasks-inbox]
+type = custom/script
+exec = $XDG_CONFIG_HOME/polybar/tasks.sh
+interval = 3
+click-left = $TERMINAL --class=floatingKitty bash -c "taskwarrior-tui --report=in"
+
+[module/dotfiles]
+type = custom/script
+exec = $XDG_CONFIG_HOME/polybar/dotfiles-status.sh
+interval = 3
+click-left = $TERMINAL --class=floatingKitty bash -c "git --git-dir=$HOME/.cfg/ --work-tree=$HOME status; $SHELL"
+
+[module/alerts]
+type = custom/script
+exec = $XDG_CONFIG_HOME/polybar/alerts.sh output
+interval = 5
+click-left = $XDG_CONFIG_HOME/polybar/alerts.sh show
+click-right = $XDG_CONFIG_HOME/polybar/alerts.sh toggle 
+
+[module/volume]
+type = custom/script
+tail = true
+exec = $XDG_CONFIG_HOME/polybar/volume.sh --icons-volume " ," --icon-muted "" --sink-nicknames-from "device.description" --sink-nickname "alsa_output.pci-0000_00_1f.3.analog-stereo: " listen
+click-right = $TERMINAL -e pulsemixer &
+click-left = $XDG_CONFIG_HOME/polybar/volume.sh togmute
+scroll-up = $XDG_CONFIG_HOME/polybar/volume.sh --volume-max 130 up
+scroll-down = $XDG_CONFIG_HOME/polybar/volume.sh --volume-max 130 down
+
+[module/time]
+type = internal/date
+interval = 1
+date = %a %d/%m
+date-alt = %a, %d %b %Y
+time = %I:%M %p
+time-alt = %I:%M %p
+label = %date% | %time%
+
+[module/power-menu]
+type = custom/script
+exec = echo 
+click-left = rofi -show power-menu -modi power-menu:$XDG_CONFIG_HOME/polybar/power-menu.sh
+format-foreground = ${colors.alert}
+format-underline = ${colors.alert}
+format-background = 
+
+; vim:ft=dosini
